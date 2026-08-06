@@ -1,0 +1,39 @@
+name: Pattern Drills
+
+on:
+  push:
+    branches:
+      - pattern-drills-64
+    paths:
+      - 'PatternDrills/**'
+      - '.github/workflows/pattern-drills.yml'
+  pull_request:
+    paths:
+      - 'PatternDrills/**'
+      - '.github/workflows/pattern-drills.yml'
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: PatternDrills
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run drill checks
+        run: dotnet run --no-build --configuration Release -- all
